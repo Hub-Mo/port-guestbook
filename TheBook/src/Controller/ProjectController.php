@@ -94,4 +94,20 @@ class ProjectController extends AbstractController
            
         return $this->json($data);
     }
+
+    #[Route('/thebook/{id}', name: 'show_message', methods:["DELETE"])]
+    public function delete(ManagerRegistry $doctrine, int $id): Response
+    {
+        $entityManager = $doctrine->getManager();
+        $project = $entityManager->getRepository(TheBook::class)->find($id);
+   
+        if (!$project) {
+            return $this->json('No project found for id' . $id, 404);
+        }
+   
+        $entityManager->remove($project);
+        $entityManager->flush();
+   
+        return $this->json('Deleted a project successfully with id ' . $id);
+    }
 }
